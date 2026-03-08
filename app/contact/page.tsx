@@ -13,9 +13,11 @@ export default function Contact() {
       </nav>
 
       <section className="max-w-2xl mx-auto px-8 pt-24 pb-24">
-        <p className="text-sm font-semibold tracking-widest text-indigo-600 uppercase mb-4">Get in touch</p>
-        <h1 className="text-5xl font-bold mb-4">Let&apos;s talk.</h1>
-        <p className="text-gray-500 mb-16">Tell us about your team and we&apos;ll put together a plan to 10× your output.</p>
+        <p className="text-sm font-semibold tracking-widest text-sky-600 uppercase mb-4">Get in touch</p>
+        <h1 className="text-5xl font-bold mb-4">Tell us about<br />your resort.</h1>
+        <p className="text-gray-500 mb-16">
+          Every app starts with a conversation. Tell us about your mountain, your guests, and what you need — we&apos;ll come back with a plan built around you.
+        </p>
 
         <form className="space-y-6">
           <div className="grid grid-cols-2 gap-6">
@@ -23,7 +25,7 @@ export default function Contact() {
               <label className="block text-sm font-medium mb-2">First name</label>
               <input
                 type="text"
-                className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-indigo-400 transition-colors"
+                className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-sky-400 transition-colors"
                 placeholder="Alex"
               />
             </div>
@@ -31,39 +33,47 @@ export default function Contact() {
               <label className="block text-sm font-medium mb-2">Last name</label>
               <input
                 type="text"
-                className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-indigo-400 transition-colors"
+                className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-sky-400 transition-colors"
                 placeholder="Smith"
               />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2">Work email</label>
+            <label className="block text-sm font-medium mb-2">Email</label>
             <input
               type="email"
-              className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-indigo-400 transition-colors"
-              placeholder="alex@company.com"
+              className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-sky-400 transition-colors"
+              placeholder="alex@yourresort.com"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2">Team size</label>
-            <select className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-indigo-400 transition-colors text-gray-600">
-              <option>1–5 engineers</option>
-              <option>6–20 engineers</option>
-              <option>21–50 engineers</option>
-              <option>50+ engineers</option>
+            <label className="block text-sm font-medium mb-2">Resort name</label>
+            <input
+              type="text"
+              className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-sky-400 transition-colors"
+              placeholder="e.g. Ridgeline Resort"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-2">Number of pistes / runs</label>
+            <select className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-sky-400 transition-colors text-gray-600">
+              <option>Under 20</option>
+              <option>20–50</option>
+              <option>50–100</option>
+              <option>100+</option>
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2">What&apos;s slowing you down?</label>
+            <label className="block text-sm font-medium mb-2">What does your resort need?</label>
             <textarea
               rows={4}
-              className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-indigo-400 transition-colors resize-none"
-              placeholder="Tell us about your current bottlenecks..."
+              className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-sky-400 transition-colors resize-none"
+              placeholder="Tell us what you currently have and what you'd like to improve..."
             />
           </div>
           <button
             type="submit"
-            className="w-full bg-black text-white py-4 rounded-lg text-sm font-semibold hover:bg-gray-800 transition-colors"
+            className="w-full bg-sky-600 text-white py-4 rounded-lg text-sm font-semibold hover:bg-sky-700 transition-colors"
           >
             Send message →
           </button>

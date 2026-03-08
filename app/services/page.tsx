@@ -2,22 +2,48 @@ import Link from "next/link";
 
 const services = [
   {
-    title: "AI Issue Resolution",
-    price: "Per issue",
-    desc: "We connect AI agents to your GitHub repo. They pick up labelled issues, write fixes, run tests, and open PRs automatically.",
-    bullets: ["Parallel agent processing", "Full test suite validation", "Auto-PR with description", "Review comment handling"],
+    title: "Bespoke Resort App",
+    price: "Per resort",
+    desc: "A fully custom app built around your mountain — your branding, your map, your guest journey. iOS, Android, and web, all from one build.",
+    bullets: [
+      "Custom UI & resort branding",
+      "Interactive piste map",
+      "iOS, Android & web",
+      "Multi-language support",
+    ],
   },
   {
-    title: "Developer Pipeline Setup",
-    price: "One-time",
-    desc: "We design and implement your full SDLC pipeline — from issue triage to deployment — optimised for speed and quality.",
-    bullets: ["CI/CD configuration", "Automated code review", "Preview deployments", "Quality gates"],
+    title: "Live Conditions Platform",
+    price: "Included + hosting",
+    desc: "The engine behind your app. Real-time run and lift status, snow depth, grooming reports, and weather — updated by your team, live for your guests.",
+    bullets: [
+      "Open/closed run & lift status",
+      "Snow depth & grooming reports",
+      "Weather integration",
+      "Push alert notifications",
+    ],
   },
   {
-    title: "Ongoing Acceleration",
-    price: "Monthly retainer",
-    desc: "Continuous improvement of your dev pipeline. We monitor, tune, and expand automation as your team grows.",
-    bullets: ["Weekly pipeline reviews", "New automation rollouts", "Agent fine-tuning", "Priority support"],
+    title: "Resort Management Dashboard",
+    price: "Included",
+    desc: "A clean, simple backend for your ops team. Update run status, post resort news, manage lift schedules, and push emergency alerts — no tech skills needed.",
+    bullets: [
+      "One-click run status updates",
+      "News & events publishing",
+      "Lift schedule management",
+      "Emergency alert system",
+    ],
+  },
+  {
+    title: "Ongoing Support & Evolution",
+    price: "Annual retainer",
+    desc: "Your mountain changes every season. We stay with you — new features, design updates, integrations, and priority support whenever you need it.",
+    bullets: [
+      "Seasonal feature releases",
+      "Priority bug fixes",
+      "New integrations (ticketing, F&B, etc.)",
+      "Performance monitoring",
+    ],
   },
 ];
 
@@ -33,13 +59,15 @@ export default function Services() {
         </div>
       </nav>
 
-      <section className="max-w-4xl mx-auto px-8 pt-24 pb-16">
-        <p className="text-sm font-semibold tracking-widest text-indigo-600 uppercase mb-4">What we do</p>
+      <section className="max-w-5xl mx-auto px-8 pt-24 pb-16">
+        <p className="text-sm font-semibold tracking-widest text-sky-600 uppercase mb-4">What we build</p>
         <h1 className="text-5xl font-bold mb-6">Services</h1>
-        <p className="text-xl text-gray-500 max-w-2xl">Everything you need to go from slow to autonomous — without changing how your team works.</p>
+        <p className="text-xl text-gray-500 max-w-2xl">
+          Everything a modern ski resort needs — from a beautifully designed guest app to the live conditions platform powering it behind the scenes.
+        </p>
       </section>
 
-      <section className="max-w-4xl mx-auto px-8 pb-24 grid gap-8">
+      <section className="max-w-5xl mx-auto px-8 pb-24 grid gap-8">
         {services.map((s) => (
           <div key={s.title} className="border border-gray-100 rounded-xl p-10 hover:border-gray-300 transition-colors">
             <div className="flex items-start justify-between mb-4">
@@ -50,7 +78,7 @@ export default function Services() {
             <ul className="grid grid-cols-2 gap-3">
               {s.bullets.map((b) => (
                 <li key={b} className="flex items-center gap-2 text-sm text-gray-600">
-                  <span className="text-indigo-500">✓</span> {b}
+                  <span className="text-sky-500">✓</span> {b}
                 </li>
               ))}
             </ul>

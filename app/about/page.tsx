@@ -12,29 +12,29 @@ export default function About() {
         </div>
       </nav>
 
-      <section className="max-w-4xl mx-auto px-8 pt-24 pb-16">
-        <p className="text-sm font-semibold tracking-widest text-indigo-600 uppercase mb-4">Who we are</p>
-        <h1 className="text-5xl font-bold mb-8">Built by engineers,<br />for engineers.</h1>
+      <section className="max-w-5xl mx-auto px-8 pt-24 pb-16">
+        <p className="text-sm font-semibold tracking-widest text-sky-600 uppercase mb-4">Who we are</p>
+        <h1 className="text-5xl font-bold mb-8">Built by skiers.<br />Built for resorts.</h1>
         <div className="grid grid-cols-2 gap-16">
           <div>
             <p className="text-gray-500 leading-relaxed mb-6">
-              SpeedUp Dev was born from frustration. We watched talented engineers spend their days on repetitive code reviews, chasing failing CI pipelines, and manually triaging GitHub issues.
+              SpeedUp Dev started on a chairlift. We were frustrated — checking a resort&apos;s website on a slow mobile connection just to find out if a run was open, only to get an outdated PDF from three days ago.
             </p>
             <p className="text-gray-500 leading-relaxed mb-6">
-              We built a better way. AI agents that handle the grunt work — autonomously, accurately, and fast — so your team can focus on architecture, product, and the hard problems that actually matter.
+              We&apos;re developers who ski. We knew resorts deserved better tools — and so did their guests. So we built them. Bespoke apps that put live piste status, conditions, and the full resort experience in the palm of every guest&apos;s hand.
             </p>
             <p className="text-gray-500 leading-relaxed">
-              We're not a tool. We're a team that embeds into your workflow and makes it faster.
+              Every resort is different. Every app we build is different too. No templates, no shortcuts — just great software, tailored to your mountain.
             </p>
           </div>
           <div className="space-y-8">
             {[
-              { label: "Founded", value: "2024" },
-              { label: "Issues resolved", value: "10,000+" },
-              { label: "PRs shipped", value: "3,500+" },
-              { label: "Teams accelerated", value: "40+" },
+              { label: "Resorts powered", value: "12+" },
+              { label: "Runs tracked live", value: "2,400+" },
+              { label: "Seasons delivered", value: "5" },
+              { label: "Uptime during season", value: "99.9%" },
             ].map((stat) => (
-              <div key={stat.label} className="border-l-2 border-indigo-100 pl-6">
+              <div key={stat.label} className="border-l-2 border-sky-100 pl-6">
                 <p className="text-3xl font-bold">{stat.value}</p>
                 <p className="text-sm text-gray-400 mt-1">{stat.label}</p>
               </div>
@@ -44,13 +44,13 @@ export default function About() {
       </section>
 
       <section className="bg-gray-50 py-20">
-        <div className="max-w-4xl mx-auto px-8">
+        <div className="max-w-5xl mx-auto px-8">
           <h2 className="text-2xl font-bold mb-12">Our principles</h2>
           <div className="grid grid-cols-3 gap-8">
             {[
-              { title: "Zero intervention", desc: "If it needs a human to work, we haven't finished the job." },
-              { title: "Quality at speed", desc: "Fast doesn't mean sloppy. Every change is tested and reviewed." },
-              { title: "Your stack, your rules", desc: "We adapt to how you work, not the other way around." },
+              { title: "Bespoke, not templated", desc: "Your resort has its own identity. Your app should too. We build from scratch, every time." },
+              { title: "Live means live", desc: "Status that&apos;s 3 hours old isn&apos;t status. We build systems that update the moment something changes on the mountain." },
+              { title: "Simple for your team", desc: "Your ops team shouldn&apos;t need a developer to open a run. We make the backend as easy as the front end is beautiful." },
             ].map((p) => (
               <div key={p.title}>
                 <h3 className="font-semibold mb-3">{p.title}</h3>
