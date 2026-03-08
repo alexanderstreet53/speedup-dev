@@ -47,46 +47,48 @@ export default function Services() {
   return (
     <main className="min-h-screen bg-slate-900 text-white">
       {/* Nav */}
-      <nav className="flex items-center justify-between px-8 py-5 border-b border-slate-800">
-        <Link href="/" className="text-2xl font-black tracking-tight text-white">
+      <nav className="flex items-center justify-between px-6 md:px-8 py-4 border-b border-slate-800">
+        <Link href="/" className="text-xl md:text-2xl font-black tracking-tight text-white">
           patter<span className="text-cyan-400">.</span>
         </Link>
-        <div className="flex gap-8 text-sm font-medium text-slate-400">
-          <Link href="/services" className="text-white font-semibold">Services</Link>
-          <Link href="/about" className="hover:text-white transition-colors">About</Link>
-          <Link href="/contact" className="bg-cyan-400 text-slate-900 px-5 py-2 rounded-full font-semibold hover:bg-cyan-300 transition-colors">
+        <div className="flex items-center gap-4 md:gap-8">
+          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
+            <Link href="/services" className="text-white font-semibold">Services</Link>
+            <Link href="/about" className="hover:text-white transition-colors">About</Link>
+          </div>
+          <Link href="/contact" className="bg-cyan-400 text-slate-900 px-4 md:px-5 py-2 rounded-full text-sm font-semibold hover:bg-cyan-300 transition-colors whitespace-nowrap">
             Get in touch
           </Link>
         </div>
       </nav>
 
       {/* Header */}
-      <section className="max-w-5xl mx-auto px-8 pt-24 pb-16">
+      <section className="max-w-5xl mx-auto px-6 md:px-8 pt-16 md:pt-24 pb-12 md:pb-16">
         <p className="text-sm font-bold tracking-widest text-cyan-400 uppercase mb-4">What we build</p>
-        <h1 className="text-6xl font-black mb-6">Services</h1>
-        <p className="text-xl text-slate-400 max-w-2xl leading-relaxed">
+        <h1 className="text-4xl md:text-6xl font-black mb-6">Services</h1>
+        <p className="text-lg md:text-xl text-slate-400 max-w-2xl leading-relaxed">
           Everything a modern ski resort needs — from a beautifully designed guest app to the live conditions platform powering it behind the scenes.
         </p>
       </section>
 
       {/* Service cards */}
-      <section className="max-w-5xl mx-auto px-8 pb-24 grid gap-6">
+      <section className="max-w-5xl mx-auto px-6 md:px-8 pb-24 grid gap-5">
         {services.map((s) => (
           <div
             key={s.title}
-            className={`bg-gradient-to-br ${s.bg} border ${s.border} rounded-3xl p-10 hover:border-opacity-60 transition-all`}
+            className={`bg-gradient-to-br ${s.bg} border ${s.border} rounded-3xl p-7 md:p-10`}
           >
-            <div className="flex items-start justify-between mb-6">
+            <div className="flex items-start justify-between gap-4 mb-5">
               <div>
                 <div className={`inline-block text-xs font-bold px-3 py-1 rounded-full mb-3 ${s.tag}`}>
                   {s.price}
                 </div>
-                <h2 className="text-2xl font-black">{s.title}</h2>
+                <h2 className="text-xl md:text-2xl font-black">{s.title}</h2>
               </div>
-              <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${s.gradient} flex-shrink-0`} />
+              <div className={`w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-gradient-to-br ${s.gradient} flex-shrink-0`} />
             </div>
-            <p className="text-slate-400 mb-8 leading-relaxed">{s.desc}</p>
-            <ul className="grid grid-cols-2 gap-3">
+            <p className="text-slate-400 mb-7 leading-relaxed">{s.desc}</p>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {s.bullets.map((b) => (
                 <li key={b} className="flex items-center gap-2 text-sm text-slate-300">
                   <span className={`w-5 h-5 rounded-full bg-gradient-to-br ${s.gradient} flex items-center justify-center text-white text-xs font-bold flex-shrink-0`}>
@@ -101,7 +103,7 @@ export default function Services() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-slate-800 py-8 px-8 text-center text-sm text-slate-500">
+      <footer className="border-t border-slate-800 py-8 px-6 md:px-8 text-center text-sm text-slate-500">
         © {new Date().getFullYear()} Patter. All rights reserved.
       </footer>
     </main>

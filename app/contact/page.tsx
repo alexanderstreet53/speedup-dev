@@ -4,14 +4,18 @@ export default function Contact() {
   return (
     <main className="min-h-screen bg-slate-900 text-white">
       {/* Nav */}
-      <nav className="flex items-center justify-between px-8 py-5 border-b border-slate-800">
-        <Link href="/" className="text-2xl font-black tracking-tight text-white">
+      <nav className="flex items-center justify-between px-6 md:px-8 py-4 border-b border-slate-800">
+        <Link href="/" className="text-xl md:text-2xl font-black tracking-tight text-white">
           patter<span className="text-cyan-400">.</span>
         </Link>
-        <div className="flex gap-8 text-sm font-medium text-slate-400">
-          <Link href="/services" className="hover:text-white transition-colors">Services</Link>
-          <Link href="/about" className="hover:text-white transition-colors">About</Link>
-          <Link href="/contact" className="text-white font-semibold">Contact</Link>
+        <div className="flex items-center gap-4 md:gap-8">
+          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
+            <Link href="/services" className="hover:text-white transition-colors">Services</Link>
+            <Link href="/about" className="hover:text-white transition-colors">About</Link>
+          </div>
+          <Link href="/contact" className="bg-cyan-400 text-slate-900 px-4 md:px-5 py-2 rounded-full text-sm font-semibold hover:bg-cyan-300 transition-colors whitespace-nowrap">
+            Get in touch
+          </Link>
         </div>
       </nav>
 
@@ -21,20 +25,20 @@ export default function Contact() {
           <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-indigo-600/10 blur-3xl" />
         </div>
 
-        <div className="relative max-w-2xl mx-auto px-8 pt-24 pb-24">
+        <div className="relative max-w-2xl mx-auto px-6 md:px-8 pt-16 md:pt-24 pb-24">
           <p className="text-sm font-bold tracking-widest text-cyan-400 uppercase mb-4">Get in touch</p>
-          <h1 className="text-6xl font-black mb-4">
+          <h1 className="text-4xl md:text-6xl font-black mb-4">
             Tell us about<br />
             <span className="bg-gradient-to-r from-cyan-400 to-sky-400 bg-clip-text text-transparent">
               your resort.
             </span>
           </h1>
-          <p className="text-slate-400 mb-12 text-lg leading-relaxed">
+          <p className="text-slate-400 mb-10 md:mb-12 text-lg leading-relaxed">
             Every app starts with a conversation. Tell us about your mountain, your guests, and what you need — we&apos;ll come back with a plan built around you.
           </p>
 
           <form className="space-y-5">
-            <div className="grid grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
                 <label className="block text-sm font-semibold mb-2 text-slate-300">First name</label>
                 <input
@@ -96,7 +100,7 @@ export default function Contact() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-slate-800 py-8 px-8 text-center text-sm text-slate-500">
+      <footer className="border-t border-slate-800 py-8 px-6 md:px-8 text-center text-sm text-slate-500">
         © {new Date().getFullYear()} Patter. All rights reserved.
       </footer>
     </main>
