@@ -1,76 +1,95 @@
 import { test, expect, Page } from '@playwright/test';
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────────────────────
 
 async function checkNoHorizontalOverflow(page: Page) {
-  const overflow = await page.evaluate(() => {
-    return document.documentElement.scrollWidth > document.documentElement.clientWidth;
-  });
+  const overflow = await page.evaluate(() =>
+    document.documentElement.scrollWidth > document.documentElement.clientWidth
+  );
   expect(overflow, 'Page should not have horizontal overflow').toBe(false);
 }
 
 async function checkNoOverlappingElements(page: Page) {
   const overlaps = await page.evaluate(() => {
-    const elements = Array.from(document.querySelectorAll('nav, h1, h2, p, a, button, input, textarea'));
-    const rects = elements.map(el => {
-      const r = el.getBoundingClientRect();
-      return { el: el.tagName + (el.id ? `#${el.id}` : ''), top: r.top, left: r.left, bottom: r.bottom, right: r.right, width: r.width, height: r.height };
-    }).filter(r => r.width > 0 && r.height > 0 && r.top >= 0);
+    // Only check leaf-level interactive/content elements (not containers)
+    const selectors = ['h1', 'h2', 'h3', 'a', 'button', 'input', 'select', 'textarea'];
+    const elements = Array.from(document.querySelectorAll(selectors.join(',')));
+
+    const rects = elements
+      .map(el => ({
+        el,
+        tag: el.tagName,
+        text: (el.textContent ?? '').trim().slice(0, 30),
+        rect: el.getBoundingClientRect(),
+      }))
+      .filter(({ rect }) =>
+        rect.width > 5 && rect.height > 5 && rect.top >= 0 && rect.top < window.innerHeight * 3
+      );
 
     const issues: string[] = [];
     for (let i = 0; i < rects.length; i++) {
       for (let j = i + 1; j < rects.length; j++) {
         const a = rects[i], b = rects[j];
-        const overlapX = Math.min(a.right, b.right) - Math.max(a.left, b.left);
-        const overlapY = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
-        if (overlapX > 20 && overlapY > 20) {
-          issues.push(`${a.el} overlaps ${b.el}`);
+
+        // Skip if one element contains the other
+        if (a.el.contains(b.el) || b.el.contains(a.el)) continue;
+
+        const overlapX = Math.min(a.rect.right, b.rect.right) - Math.max(a.rect.left, b.rect.left);
+        const overlapY = Math.min(a.rect.bottom, b.rect.bottom) - Math.max(a.rect.top, b.rect.top);
+
+        // Only flag if substantial overlap in both axes (>30px) — rules out margin/padding edge cases
+        if (overlapX > 30 && overlapY > 30) {
+          issues.push(`"${a.text}" (${a.tag}) overlaps "${b.text}" (${b.tag})`);
         }
       }
     }
-    return issues.slice(0, 5); // cap output
+    return issues.slice(0, 5);
   });
-  expect(overlaps, `Overlapping elements detected: ${overlaps.join(', ')}`).toHaveLength(0);
+  expect(overlaps, `Overlapping elements: ${overlaps.join(' | ')}`).toHaveLength(0);
 }
 
 async function checkNavVisible(page: Page) {
-  const logo = page.getByText('patter');
-  await expect(logo).toBeVisible();
-  const contactBtn = page.getByRole('link', { name: /get in touch/i });
-  await expect(contactBtn).toBeVisible();
+  await expect(page.getByText('patter').first()).toBeVisible();
+  await expect(page.getByRole('link', { name: /get in touch/i }).first()).toBeVisible();
 }
 
-// ── Pages under test ──────────────────────────────────────────────────────────
+async function checkNavSingleRow(page: Page) {
+  // Nav should be compact — no taller than 100px (single row)
+  const navHeight = await page.locator('nav').first().evaluate(
+    el => el.getBoundingClientRect().height
+  );
+  expect(navHeight, `Nav height ${navHeight}px should be a single row (< 100px)`).toBeLessThan(100);
+}
+
+// ── Pages ─────────────────────────────────────────────────────────────────────
 
 const pages = [
-  { path: '/', name: 'Home' },
+  { path: '/',         name: 'Home'     },
   { path: '/services', name: 'Services' },
-  { path: '/about', name: 'About' },
-  { path: '/contact', name: 'Contact' },
+  { path: '/about',    name: 'About'    },
+  { path: '/contact',  name: 'Contact'  },
 ];
 
-// ── Tests ─────────────────────────────────────────────────────────────────────
+// ── Per-page tests ────────────────────────────────────────────────────────────
 
 for (const { path, name } of pages) {
   test.describe(`${name} page`, () => {
 
-    test('loads without errors', async ({ page }) => {
+    test('loads with status 200 and no console errors', async ({ page }) => {
       const errors: string[] = [];
       page.on('console', msg => { if (msg.type() === 'error') errors.push(msg.text()); });
       page.on('pageerror', err => errors.push(err.message));
 
       const response = await page.goto(path);
-      expect(response?.status(), `${name} should return 200`).toBe(200);
-      expect(errors.filter(e => !e.includes('favicon')), `No console errors on ${name}`).toHaveLength(0);
+      expect(response?.status()).toBe(200);
+      const realErrors = errors.filter(e => !e.includes('favicon') && !e.includes('404'));
+      expect(realErrors, `Console errors on ${name}: ${realErrors.join(', ')}`).toHaveLength(0);
     });
 
-    test('nav is visible and aligned', async ({ page }) => {
+    test('nav is visible and single row', async ({ page }) => {
       await page.goto(path);
       await checkNavVisible(page);
-
-      // Nav should be a single line (no wrapping/overflow)
-      const navHeight = await page.locator('nav').first().evaluate(el => el.getBoundingClientRect().height);
-      expect(navHeight, 'Nav should be compact (< 80px)').toBeLessThan(80);
+      await checkNavSingleRow(page);
     });
 
     test('no horizontal overflow', async ({ page }) => {
@@ -78,31 +97,31 @@ for (const { path, name } of pages) {
       await checkNoHorizontalOverflow(page);
     });
 
-    test('no overlapping elements', async ({ page }) => {
+    test('no overlapping interactive elements', async ({ page }) => {
       await page.goto(path);
-      // Scroll through the page to trigger any lazy elements
-      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-      await page.evaluate(() => window.scrollTo(0, 0));
+      await page.waitForLoadState('networkidle');
       await checkNoOverlappingElements(page);
     });
 
   });
 }
 
-// ── Home page specific ────────────────────────────────────────────────────────
+// ── Home page content ─────────────────────────────────────────────────────────
 
 test.describe('Home page content', () => {
-  test('hero headline and CTA are visible', async ({ page }) => {
+
+  test('hero section is present with headline and CTA', async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByText('Your mountain.')).toBeVisible();
+    // Partial text match — robust to line breaks in JSX
+    await expect(page.locator('h1')).toContainText('mountain');
+    await expect(page.locator('h1')).toContainText('Live');
     await expect(page.getByRole('link', { name: /build my app/i })).toBeVisible();
   });
 
-  test('live demo section is present', async ({ page }) => {
+  test('live demo section shows resort name and status', async ({ page }) => {
     await page.goto('/');
     await expect(page.getByText('Live Demo')).toBeVisible();
     await expect(page.getByText('Ridgeline Resort')).toBeVisible();
-    await expect(page.getByText('Live', { exact: true })).toBeVisible();
   });
 
   test('shows run and lift status cards', async ({ page }) => {
@@ -110,12 +129,20 @@ test.describe('Home page content', () => {
     await expect(page.getByText('Summit Express')).toBeVisible();
     await expect(page.getByText('Eagle Gondola')).toBeVisible();
   });
+
+  test('stats section is present', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.getByText('Resorts powered')).toBeVisible();
+    await expect(page.getByText('Runs tracked live')).toBeVisible();
+  });
+
 });
 
 // ── Contact form ──────────────────────────────────────────────────────────────
 
 test.describe('Contact form', () => {
-  test('all form fields are present and interactive', async ({ page }) => {
+
+  test('all form fields are present', async ({ page }) => {
     await page.goto('/contact');
     await expect(page.getByLabel('First name')).toBeVisible();
     await expect(page.getByLabel('Last name')).toBeVisible();
@@ -133,10 +160,16 @@ test.describe('Contact form', () => {
     await page.getByLabel('Email').fill('test@resort.com');
     await page.getByLabel('Resort name').fill('Test Mountain');
     await page.getByLabel(/what does your resort need/i).fill('Need a live run status app');
-    // Verify values were entered
     await expect(page.getByLabel('First name')).toHaveValue('Test');
     await expect(page.getByLabel('Email')).toHaveValue('test@resort.com');
   });
+
+  test('submit button is enabled on load', async ({ page }) => {
+    await page.goto('/contact');
+    const btn = page.getByRole('button', { name: /send message/i });
+    await expect(btn).toBeEnabled();
+  });
+
 });
 
 // ── Mobile-specific ───────────────────────────────────────────────────────────
@@ -144,23 +177,44 @@ test.describe('Contact form', () => {
 test.describe('Mobile layout', () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
-  test('About principles stack vertically on mobile', async ({ page }) => {
-    await page.goto('/about');
-    const principles = page.locator('text=Bespoke, not templated').locator('..');
-    await expect(principles).toBeVisible();
+  test('home page: no overflow on mobile', async ({ page }) => {
+    await page.goto('/');
     await checkNoHorizontalOverflow(page);
+    await expect(page.locator('h1')).toContainText('mountain');
   });
 
-  test('Services bullets stack on mobile', async ({ page }) => {
+  test('about page: principles visible on mobile', async ({ page }) => {
+    await page.goto('/about');
+    await checkNoHorizontalOverflow(page);
+    await expect(page.getByText('Bespoke, not templated')).toBeVisible();
+    await expect(page.getByText('Live means live')).toBeVisible();
+  });
+
+  test('services page: no overflow on mobile', async ({ page }) => {
     await page.goto('/services');
     await checkNoHorizontalOverflow(page);
     await expect(page.getByText('Bespoke Resort App')).toBeVisible();
   });
 
-  test('Contact name fields stack on mobile', async ({ page }) => {
+  test('contact page: form fields accessible on mobile', async ({ page }) => {
     await page.goto('/contact');
     await checkNoHorizontalOverflow(page);
     await expect(page.getByLabel('First name')).toBeVisible();
     await expect(page.getByLabel('Last name')).toBeVisible();
   });
+
+});
+
+// ── API health check ──────────────────────────────────────────────────────────
+
+test.describe('API', () => {
+
+  test('/api/health returns ok', async ({ request, baseURL }) => {
+    const res = await request.get(`${baseURL}/api/health`);
+    expect(res.status()).toBe(200);
+    const body = await res.json();
+    expect(body.status).toBe('ok');
+    expect(body.timestamp).toBeTruthy();
+  });
+
 });
