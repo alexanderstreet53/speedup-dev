@@ -1,6 +1,46 @@
+'use client';
+
 import Link from "next/link";
+import { useState, FormEvent } from "react";
+
+type FormState = 'idle' | 'submitting' | 'success' | 'error';
 
 export default function Contact() {
+  const [state, setState] = useState<FormState>('idle');
+  const [errorMsg, setErrorMsg] = useState('');
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setState('submitting');
+    setErrorMsg('');
+
+    const fd = new FormData(e.currentTarget);
+    const payload = {
+      firstName:  fd.get('firstName'),
+      lastName:   fd.get('lastName'),
+      email:      fd.get('email'),
+      resortName: fd.get('resortName'),
+      pisteCount: fd.get('pisteCount'),
+      message:    fd.get('message'),
+    };
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Something went wrong');
+      }
+      setState('success');
+    } catch (err) {
+      setState('error');
+      setErrorMsg(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
+    }
+  }
+
   return (
     <main className="min-h-screen bg-slate-900 text-white">
       {/* Nav */}
@@ -37,65 +77,105 @@ export default function Contact() {
             Every app starts with a conversation. Tell us about your mountain, your guests, and what you need — we&apos;ll come back with a plan built around you.
           </p>
 
-          <form className="space-y-5">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          {/* Success state */}
+          {state === 'success' ? (
+            <div className="bg-gradient-to-br from-emerald-950/60 to-slate-900 border border-emerald-500/30 rounded-3xl p-10 text-center">
+              <div className="w-14 h-14 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center mx-auto mb-6 text-2xl">
+                ✓
+              </div>
+              <h2 className="text-2xl font-black mb-3">Message sent!</h2>
+              <p className="text-slate-400 leading-relaxed">
+                Thanks for reaching out. We&apos;ll come back to you with a tailored proposal for your resort.
+              </p>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                  <label htmlFor="firstName" className="block text-sm font-semibold mb-2 text-slate-300">First name</label>
+                  <input
+                    id="firstName"
+                    name="firstName"
+                    type="text"
+                    required
+                    className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyan-500 transition-colors text-white placeholder:text-slate-500"
+                    placeholder="Alex"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="lastName" className="block text-sm font-semibold mb-2 text-slate-300">Last name</label>
+                  <input
+                    id="lastName"
+                    name="lastName"
+                    type="text"
+                    required
+                    className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyan-500 transition-colors text-white placeholder:text-slate-500"
+                    placeholder="Smith"
+                  />
+                </div>
+              </div>
               <div>
-                <label className="block text-sm font-semibold mb-2 text-slate-300">First name</label>
+                <label htmlFor="email" className="block text-sm font-semibold mb-2 text-slate-300">Email</label>
                 <input
-                  type="text"
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
                   className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyan-500 transition-colors text-white placeholder:text-slate-500"
-                  placeholder="Alex"
+                  placeholder="alex@yourresort.com"
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold mb-2 text-slate-300">Last name</label>
+                <label htmlFor="resortName" className="block text-sm font-semibold mb-2 text-slate-300">Resort name</label>
                 <input
+                  id="resortName"
+                  name="resortName"
                   type="text"
+                  required
                   className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyan-500 transition-colors text-white placeholder:text-slate-500"
-                  placeholder="Smith"
+                  placeholder="e.g. Ridgeline Resort"
                 />
               </div>
-            </div>
-            <div>
-              <label className="block text-sm font-semibold mb-2 text-slate-300">Email</label>
-              <input
-                type="email"
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyan-500 transition-colors text-white placeholder:text-slate-500"
-                placeholder="alex@yourresort.com"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold mb-2 text-slate-300">Resort name</label>
-              <input
-                type="text"
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyan-500 transition-colors text-white placeholder:text-slate-500"
-                placeholder="e.g. Ridgeline Resort"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold mb-2 text-slate-300">Number of pistes / runs</label>
-              <select className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyan-500 transition-colors text-slate-300">
-                <option>Under 20</option>
-                <option>20–50</option>
-                <option>50–100</option>
-                <option>100+</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-semibold mb-2 text-slate-300">What does your resort need?</label>
-              <textarea
-                rows={4}
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyan-500 transition-colors resize-none text-white placeholder:text-slate-500"
-                placeholder="Tell us what you currently have and what you'd like to improve..."
-              />
-            </div>
-            <button
-              type="submit"
-              className="w-full bg-gradient-to-r from-cyan-400 to-sky-500 text-slate-900 py-4 rounded-xl text-sm font-bold hover:from-cyan-300 hover:to-sky-400 transition-all shadow-lg shadow-cyan-500/20"
-            >
-              Send message →
-            </button>
-          </form>
+              <div>
+                <label htmlFor="pisteCount" className="block text-sm font-semibold mb-2 text-slate-300">Number of pistes / runs</label>
+                <select
+                  id="pisteCount"
+                  name="pisteCount"
+                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyan-500 transition-colors text-slate-300"
+                >
+                  <option>Under 20</option>
+                  <option>20–50</option>
+                  <option>50–100</option>
+                  <option>100+</option>
+                </select>
+              </div>
+              <div>
+                <label htmlFor="message" className="block text-sm font-semibold mb-2 text-slate-300">What does your resort need?</label>
+                <textarea
+                  id="message"
+                  name="message"
+                  rows={4}
+                  required
+                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyan-500 transition-colors resize-none text-white placeholder:text-slate-500"
+                  placeholder="Tell us what you currently have and what you'd like to improve..."
+                />
+              </div>
+
+              {state === 'error' && (
+                <div className="bg-red-500/10 border border-red-500/30 rounded-xl px-4 py-3 text-red-400 text-sm">
+                  {errorMsg}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={state === 'submitting'}
+                className="w-full bg-gradient-to-r from-cyan-400 to-sky-500 text-slate-900 py-4 rounded-xl text-sm font-bold hover:from-cyan-300 hover:to-sky-400 transition-all shadow-lg shadow-cyan-500/20 disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {state === 'submitting' ? 'Sending…' : 'Send message →'}
+              </button>
+            </form>
+          )}
         </div>
       </section>
 
